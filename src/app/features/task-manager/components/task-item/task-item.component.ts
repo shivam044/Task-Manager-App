@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TaskService } from '../../../../core/services/task.service';
-import { Task } from '../../../../core/models/task.model';
 import { FormsModule } from '@angular/forms';
+import { Task } from '../../../../core/models/task.model';
+import { TaskService } from '../../../../core/services/task.service';
 
 @Component({
   selector: 'app-task-item',
@@ -17,6 +17,8 @@ export class TaskItemComponent {
 
   isEditing: boolean = false;
   editedDescription: string = '';
+  editedDueDate: string = ''; // Format: yyyy-MM-dd
+  editedPriority: 'low' | 'medium' | 'high' = 'low';
 
   constructor(private taskService: TaskService) {}
 
@@ -30,22 +32,41 @@ export class TaskItemComponent {
   }
 
   editTask(): void {
-    // Switch to edit mode and copy the current description
     this.isEditing = true;
     this.editedDescription = this.task.description;
+    // Convert the task's due date to a "yyyy-MM-dd" string
+    if (this.task.dueDate) {
+      const dateObj = new Date(this.task.dueDate);
+      const year = dateObj.getFullYear();
+      const month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
+      const day = ('0' + dateObj.getDate()).slice(-2);
+      this.editedDueDate = `${year}-${month}-${day}`;
+    } else {
+      this.editedDueDate = '';
+    }
+    this.editedPriority = this.task.priority ? this.task.priority : 'low';
   }
 
   finishEdit(): void {
-    // Save changes only if there's a non-empty updated value
     if (this.editedDescription.trim()) {
       this.task.description = this.editedDescription.trim();
-      this.taskService.updateTask(this.task);
     }
+    // Update dueDate: if a date was entered, convert it manually to a Date object in local time.
+    if (this.editedDueDate && this.editedDueDate.trim()) {
+      const parts = this.editedDueDate.split('-');
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10); // 1-indexed
+      const day = parseInt(parts[2], 10);
+      this.task.dueDate = new Date(year, month - 1, day);
+    } else {
+      this.task.dueDate = undefined;
+    }
+    this.task.priority = this.editedPriority;
+    this.taskService.updateTask(this.task);
     this.isEditing = false;
   }
 
   cancelEdit(): void {
-    // Exit edit mode without saving changes
     this.isEditing = false;
   }
 

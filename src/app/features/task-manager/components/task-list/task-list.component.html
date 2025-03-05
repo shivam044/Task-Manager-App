@@ -19,8 +19,7 @@
     <!-- Sort Dropdown -->
     <div class="col-12 col-md-6 text-center text-md-right">
       <div class="input-group">
-        <div class="input-group-prepend" style="
-        margin-right: 10px;">
+        <div class="input-group-prepend" style="margin-right: 10px;">
           <span class="input-group-text">Sort by</span>
         </div>
         <select class="custom-select" (change)="setSortOption($any($event.target).value)">
@@ -43,9 +42,9 @@
 
   <!-- Deleted Task Alert -->
   <div *ngIf="recentlyDeletedTask" class="alert alert-warning alert-dismissible mt-3 text-center" role="alert">
-    Task deleted.
+    Task deleted
     <button type="button" class="close" aria-label="Close" (click)="undoDelete()">
-      <span aria-hidden="true">&times;</span>
+      <span aria-hidden="true">Undo</span>
     </button>
   </div>
 </div>

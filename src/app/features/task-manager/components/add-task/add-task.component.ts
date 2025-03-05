@@ -1,40 +1,36 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgbDateStruct, NgbDateParserFormatter, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { TaskService } from '../../../../core/services/task.service';
 import { Task } from '../../../../core/models/task.model';
 
 @Component({
   selector: 'app-add-task',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgbDatepickerModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-task.component.html',
   styleUrls: ['./add-task.component.scss']
 })
 export class AddTaskComponent {
   taskDescription: string = '';
-
-  // Due date stored as NgbDateStruct (from input)
-  dueDate!: NgbDateStruct;
+  dueDate: string = ''; // using native date input returns a string in "yyyy-MM-dd" format
   priority: 'low' | 'medium' | 'high' = 'low';
 
-  constructor(private taskService: TaskService, private parserFormatter: NgbDateParserFormatter) {}
+  constructor(private taskService: TaskService) {}
 
   onAddTask(): void {
     if (!this.taskDescription.trim()) {
       return;
     }
 
-    // Convert NgbDateStruct to JavaScript Date
+    // Convert the dueDate string ("yyyy-mm-dd") to a local Date object manually.
     let dueDateObj: Date | undefined;
-    if (this.dueDate) {
-      // Option 1: Using NgbDateParserFormatter to parse the date string
-      // const dateString = this.parserFormatter.format(this.dueDate);
-      // dueDateObj = new Date(dateString);
-
-      // Option 2: Direct conversion (month is 1-indexed in NgbDateStruct, but Date expects 0-indexed month)
-      dueDateObj = new Date(this.dueDate.year, this.dueDate.month - 1, this.dueDate.day);
+    if (this.dueDate && this.dueDate.trim()) {
+      const parts = this.dueDate.split('-');
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10); // 1-indexed
+      const day = parseInt(parts[2], 10);
+      dueDateObj = new Date(year, month - 1, day); // local date
     }
 
     const newTask: Task = {
@@ -46,8 +42,9 @@ export class AddTaskComponent {
     };
 
     this.taskService.addTask(newTask);
+    // Reset form fields
     this.taskDescription = '';
-    this.dueDate = {} as NgbDateStruct;
+    this.dueDate = '';
     this.priority = 'low';
   }
 }
