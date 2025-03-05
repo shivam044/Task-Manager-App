@@ -1,42 +1,63 @@
-<li class="list-group-item d-flex justify-content-between align-items-center">
-  <div class="d-flex align-items-center">
-    <div class="form-check mr-3">
-      <input
-        type="checkbox"
-        class="form-check-input"
-        [checked]="task.isCompleted"
-        (change)="toggleTask()"
-        id="task-{{task.id}}">
-      <label class="form-check-label" [for]="'task-' + task.id"></label>
-    </div>
-    <div>
-      <ng-container *ngIf="!isEditing; else editBlock">
-        <span [ngClass]="{'text-muted text-decoration-line-through': task.isCompleted}">
-          {{ task.description }}
-        </span>
-      </ng-container>
-      <ng-template #editBlock>
+<li class="list-group-item">
+  <div class="row align-items-center">
+    <!-- Left Column (Checkbox + Description) -->
+    <div class="col-12 col-md-8 d-flex align-items-start align-items-md-center mb-2 mb-md-0">
+      <!-- Checkbox -->
+      <div class="form-check mr-2">
         <input
-          type="text"
-          class="form-control form-control-sm"
-          [(ngModel)]="editedDescription"
-          (keydown)="onKeyPress($event)"
-          (blur)="finishEdit()"
-          autofocus>
-      </ng-template>
-      <div class="mt-1">
-        <small class="text-secondary" *ngIf="task.dueDate">
-          Due: {{ task.dueDate | date:'shortDate' }}
-        </small>
-        <small class="text-secondary ml-2" *ngIf="task.priority">
-          Priority: {{ task.priority | titlecase }}
-        </small>
+          type="checkbox"
+          class="form-check-input"
+          [checked]="task.isCompleted"
+          (change)="toggleTask()"
+          id="task-{{ task.id }}">
+        <label class="form-check-label" [for]="'task-' + task.id"></label>
+      </div>
+
+      <!-- Task Description & Edit Block -->
+      <div>
+        <ng-container *ngIf="!isEditing; else editBlock">
+          <span [ngClass]="{'text-muted text-decoration-line-through': task.isCompleted}">
+            {{ task.description }}
+          </span>
+        </ng-container>
+
+        <ng-template #editBlock>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            [(ngModel)]="editedDescription"
+            (keydown)="onKeyPress($event)"
+            autofocus>
+        </ng-template>
+
+        <!-- Due Date & Priority -->
+        <div class="mt-1">
+          <small class="text-secondary" *ngIf="task.dueDate">
+            Due: {{ task.dueDate | date:'shortDate' }}
+          </small>
+          <small class="text-secondary ml-2" *ngIf="task.priority">
+            Priority: {{ task.priority | titlecase }}
+          </small>
+        </div>
       </div>
     </div>
-  </div>
-  <div>
-    <button *ngIf="!isEditing" class="btn btn-sm btn-warning mr-2" (click)="editTask()">Edit</button>
-    <button *ngIf="isEditing" class="btn btn-sm btn-secondary mr-2" (click)="cancelEdit()">Cancel</button>
-    <button class="btn btn-sm btn-danger" (click)="delete()">Delete</button>
+
+    <!-- Right Column (Action Buttons) -->
+    <div class="col-12 col-md-4 d-flex justify-content-end align-items-center">
+      <!-- Show Edit button when not editing -->
+      <button *ngIf="!isEditing" class="btn btn-sm px-2 btn-warning mr-4" style="
+    margin-right: 10px;" (click)="editTask()">Edit</button>
+
+      <!-- Show Save and Cancel buttons when editing -->
+      <ng-container *ngIf="isEditing">
+        <button class="btn btn-sm px-2 btn-success mr-4" style="
+    margin-right: 10px;" (click)="finishEdit()">Save</button>
+        <button class="btn btn-sm px-2 btn-secondary mr-4" style="
+    margin-right: 10px;" (click)="cancelEdit()">Cancel</button>
+      </ng-container>
+
+      <!-- Delete button -->
+      <button class="btn btn-sm btn-danger" (click)="delete()">Delete</button>
+    </div>
   </div>
 </li>

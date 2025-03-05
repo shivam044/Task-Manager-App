@@ -1,29 +1,44 @@
 <form (ngSubmit)="onAddTask()" class="mb-4" aria-label="Add new task">
-  <div class="input-group">
-    <input
-      type="text"
-      class="form-control mr-2"
-      placeholder="Enter task..."
-      [(ngModel)]="taskDescription"
-      name="taskDescription"
-      required>
-    <input
-      type="date"
-      class="form-control mr-2"
-      aria-label="Task due date"
-      [(ngModel)]="dueDate"
-      name="dueDate">
-    <select
-      class="custom-select mr-2"
-      aria-label="Task priority"
-      [(ngModel)]="priority"
-      name="priority">
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
-    </select>
-    <div class="input-group-append">
-      <button class="btn btn-primary" type="submit">Add Task</button>
+  <div class="row">
+    <!-- Task description -->
+    <div class="col-12 col-md-4 mb-2 mb-md-0">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Enter task..."
+        [(ngModel)]="taskDescription"
+        name="taskDescription"
+        required>
+    </div>
+
+    <!-- Task due date -->
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+      <input
+        type="date"
+        class="form-control"
+        aria-label="Task due date"
+        [(ngModel)]="dueDate"
+        name="dueDate">
+    </div>
+
+    <!-- Task priority -->
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+      <select
+        class="form-control"
+        aria-label="Task priority"
+        [(ngModel)]="priority"
+        name="priority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+
+    <!-- Submit button -->
+    <div class="col-12 col-md-2">
+      <button class="btn btn-primary btn-block" type="submit">
+        Add Task
+      </button>
     </div>
   </div>
 </form>
