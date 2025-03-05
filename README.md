@@ -39,16 +39,16 @@ This project allows users to add, edit, delete, and filter tasks. Users can also
    cd task-manager
 
 2. **Install dependencies:**
-  ```bash
+   ```bash
   npm install
 
 
 3. **Run the development server:**
-  ```bash
+   ```bash
   ng serve
 
 
 4. **Testing:**
-  ```bash
+   ```bash
   ng test
 
