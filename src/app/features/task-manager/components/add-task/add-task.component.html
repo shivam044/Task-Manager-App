@@ -20,6 +20,18 @@
         aria-label="Task due date"
         [(ngModel)]="dueDate"
         name="dueDate">
+        <!-- <ngb-datepicker #dp [(ngModel)]="dueDate" (navigate)="date = $event.next" /> -->
+        <!-- <div class="input-group">
+          <input
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dp"
+            [(ngModel)]="model"
+            ngbDatepicker
+            #d="ngbDatepicker"
+          />
+          <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d.toggle()" type="button"></button>
+        </div> -->
     </div>
 
     <!-- Task priority -->
