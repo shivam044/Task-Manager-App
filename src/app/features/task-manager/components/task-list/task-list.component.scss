@@ -1,0 +1,40 @@
+.task-manager {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    button {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      &.active {
+        background-color: #007acc;
+        color: #fff;
+      }
+    }
+
+    select {
+      padding: 0.5rem;
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .undo {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    button {
+      cursor: pointer;
+    }
+  }
+}

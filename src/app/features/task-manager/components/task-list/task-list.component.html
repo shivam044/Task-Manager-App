@@ -1,1 +1,26 @@
-<p>task-list works!</p>
+<div class="task-manager">
+  <div class="filters">
+    <button (click)="setFilter('all')" [class.active]="filter==='all'">All</button>
+    <button (click)="setFilter('completed')" [class.active]="filter==='completed'">Completed</button>
+    <button (click)="setFilter('incomplete')" [class.active]="filter==='incomplete'">Incomplete</button>
+    <!-- Use a template reference variable -->
+    <select #sortSelect (change)="setSortOption(sortSelect.value)">
+      <option value="default">Default</option>
+      <option value="dueDate">Due Date</option>
+      <option value="priority">Priority</option>
+    </select>
+  </div>
+
+  <ul [@listAnimation]>
+    <app-task-item
+      *ngFor="let task of filteredTasks"
+      [task]="task"
+      (deleteTask)="onTaskDeleted($event)">
+    </app-task-item>
+  </ul>
+
+  <div *ngIf="recentlyDeletedTask" class="undo">
+    <span>Task deleted.</span>
+    <button (click)="undoDelete()">Undo</button>
+  </div>
+</div>
