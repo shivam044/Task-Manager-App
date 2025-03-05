@@ -28,34 +28,30 @@ describe('AddTaskComponent', () => {
   });
 
   it('should not add task if taskDescription is empty or whitespace', () => {
-    component.taskDescription = '   ';
+    component.taskDescription$.next('   ');
     component.onAddTask();
     expect(taskServiceSpy.addTask).not.toHaveBeenCalled();
   });
 
   it('should add task and reset form fields when onAddTask is called with valid data', () => {
-    // Set valid input values.
-    component.taskDescription = 'New Task';
-    // Use an ISO date string.
-    component.dueDate = '2023-04-15';
-    component.priority = 'medium';
+    // Set valid input values using the BehaviorSubjects.
+    component.taskDescription$.next('New Task');
+    component.dueDate$.next('2023-04-15'); // ISO date string format
+    component.priority$.next('medium');
 
-    // Call onAddTask.
     component.onAddTask();
 
-    // Verify addTask was called.
     expect(taskServiceSpy.addTask).toHaveBeenCalled();
     const taskArg = taskServiceSpy.addTask.calls.mostRecent().args[0] as Task;
     expect(taskArg.description).toBe('New Task');
     expect(taskArg.isCompleted).toBeFalse();
     expect(taskArg.priority).toBe('medium');
-    // Check the date conversion:
-    // new Date(2023, 3, 15) represents April 15, 2023 (months are zero-indexed).
+    // Note: new Date(2023, 3, 15) represents April 15, 2023 (months are 0-indexed).
     expect(taskArg.dueDate).toEqual(new Date(2023, 3, 15));
 
-    // Verify that fields are reset.
-    expect(component.taskDescription).toBe('');
-    expect(component.dueDate).toEqual('');
-    expect(component.priority).toBe('low');
+    // Verify that the BehaviorSubjects are reset.
+    expect(component.taskDescription$.getValue()).toBe('');
+    expect(component.dueDate$.getValue()).toEqual('');
+    expect(component.priority$.getValue()).toBe('low');
   });
 });

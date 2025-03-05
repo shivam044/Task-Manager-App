@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { BehaviorSubject, combineLatest, Subscription, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Task } from '../../../../core/models/task.model';
 import { TaskService } from '../../../../core/services/task.service';
 import { TaskItemComponent } from '../task-item/task-item.component';
@@ -28,72 +30,77 @@ import { TaskItemComponent } from '../task-item/task-item.component';
     ])
   ]
 })
-export class TaskListComponent implements OnInit {
-  tasks: Task[] = [];
-  filter: 'all' | 'completed' | 'incomplete' = 'all';
-  sortOption: 'default' | 'dueDate' | 'priority' = 'default';
+export class TaskListComponent implements OnInit, OnDestroy {
+  // Make the filter and sort subjects public so they are accessible in the template.
+  public filterSubject: BehaviorSubject<'all' | 'completed' | 'incomplete'> =
+    new BehaviorSubject<'all' | 'completed' | 'incomplete'>('all');
+  public sortSubject: BehaviorSubject<'default' | 'dueDate' | 'priority'> =
+    new BehaviorSubject<'default' | 'dueDate' | 'priority'>('default');
+
+  // Declare filteredTasks$ but initialize it in the constructor
+  public filteredTasks$: Observable<Task[]>;
 
   recentlyDeletedTask: Task | null = null;
-  undoTimeout: any;
+  private subscription: Subscription = new Subscription();
+  private undoTimeout: any;
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService) {
+    // Now that taskService is injected, initialize filteredTasks$
+    this.filteredTasks$ = combineLatest([
+      this.taskService.tasks$,
+      this.filterSubject.asObservable(),
+      this.sortSubject.asObservable()
+    ]).pipe(
+      map(([tasks, filter, sortOption]) => {
+        let filtered = [...tasks];
+        if (filter === 'completed') {
+          filtered = filtered.filter(task => task.isCompleted);
+        } else if (filter === 'incomplete') {
+          filtered = filtered.filter(task => !task.isCompleted);
+        }
+        if (sortOption === 'dueDate') {
+          filtered.sort((a, b) => {
+            if (a.dueDate && b.dueDate) {
+              return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+            } else if (a.dueDate && !b.dueDate) {
+              return -1;
+            } else if (!a.dueDate && b.dueDate) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+        } else if (sortOption === 'priority') {
+          const priorityOrder: Record<string, number> = { high: 1, medium: 2, low: 3 };
+          filtered.sort((a, b) => {
+            const priorityA = a.priority ? priorityOrder[a.priority] : 999;
+            const priorityB = b.priority ? priorityOrder[b.priority] : 999;
+            return priorityA - priorityB;
+          });
+        }
+        return filtered;
+      })
+    );
+  }
 
   ngOnInit(): void {
-    this.loadTasks();
+    console.log('TaskListComponent initialized');
   }
 
-  loadTasks(): void {
-    this.tasks = this.taskService.getTasks();
-  }
-
-  get filteredTasks(): Task[] {
-    // 1. Copy tasks and apply filter first
-    let filtered = [...this.tasks];
-    if (this.filter === 'completed') {
-      filtered = filtered.filter(task => task.isCompleted);
-    } else if (this.filter === 'incomplete') {
-      filtered = filtered.filter(task => !task.isCompleted);
-    }
-
-    // 2. Sort based on the selected option
-    if (this.sortOption === 'dueDate') {
-      filtered.sort((a, b) => {
-        // If both tasks have due dates, compare them
-        if (a.dueDate && b.dueDate) {
-          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-        } else if (a.dueDate && !b.dueDate) {
-          // Tasks with a due date come first
-          return -1;
-        } else if (!a.dueDate && b.dueDate) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-    } else if (this.sortOption === 'priority') {
-      const priorityOrder: Record<string, number> = { high: 1, medium: 2, low: 3 };
-      filtered.sort((a, b) => {
-        // If both have priority, compare them; tasks missing priority get a fallback value.
-        const priorityA = a.priority ? priorityOrder[a.priority] : 999;
-        const priorityB = b.priority ? priorityOrder[b.priority] : 999;
-        return priorityA - priorityB;
-      });
-    }
-    console.log('Sorted tasks:', filtered);
-    return filtered;
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   setFilter(filter: 'all' | 'completed' | 'incomplete'): void {
-    this.filter = filter;
+    this.filterSubject.next(filter);
   }
 
   setSortOption(option: 'default' | 'dueDate' | 'priority'): void {
-    this.sortOption = option;
+    this.sortSubject.next(option);
   }
 
   onTaskDeleted(task: Task): void {
     this.taskService.deleteTask(task.id);
-    this.loadTasks();
     this.recentlyDeletedTask = task;
     if (this.undoTimeout) {
       clearTimeout(this.undoTimeout);
@@ -106,7 +113,6 @@ export class TaskListComponent implements OnInit {
   undoDelete(): void {
     if (this.recentlyDeletedTask) {
       this.taskService.addTask(this.recentlyDeletedTask);
-      this.loadTasks();
       this.recentlyDeletedTask = null;
       clearTimeout(this.undoTimeout);
     }
