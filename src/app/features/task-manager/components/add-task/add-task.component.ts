@@ -1,50 +1,55 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { TaskService } from '../../../../core/services/task.service';
 import { Task } from '../../../../core/models/task.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-add-task',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './add-task.component.html',
   styleUrls: ['./add-task.component.scss']
 })
 export class AddTaskComponent {
-  taskDescription: string = '';
-  dueDate: string = ''; // using native date input returns a string in "yyyy-MM-dd" format
-  priority: 'low' | 'medium' | 'high' = 'low';
+  // RxJS BehaviorSubjects for form fields
+  taskDescription$ = new BehaviorSubject<string>('');
+  dueDate$ = new BehaviorSubject<string>(''); // Expected format: "yyyy-MM-dd"
+  priority$ = new BehaviorSubject<'low' | 'medium' | 'high'>('low');
 
   constructor(private taskService: TaskService) {}
 
   onAddTask(): void {
-    if (!this.taskDescription.trim()) {
+    const description = this.taskDescription$.getValue();
+    if (!description.trim()) {
       return;
     }
-
-    // Convert the dueDate string ("yyyy-mm-dd") to a local Date object manually.
+    // Convert the dueDate string ("yyyy-MM-dd") to a local Date object at midnight.
     let dueDateObj: Date | undefined;
-    if (this.dueDate && this.dueDate.trim()) {
-      const parts = this.dueDate.split('-');
+    const dueDateStr = this.dueDate$.getValue();
+    if (dueDateStr && dueDateStr.trim()) {
+      const parts = dueDateStr.split('-');
       const year = parseInt(parts[0], 10);
-      const month = parseInt(parts[1], 10); // 1-indexed
+      const month = parseInt(parts[1], 10); // months are 1-indexed
       const day = parseInt(parts[2], 10);
-      dueDateObj = new Date(year, month - 1, day); // local date
+      dueDateObj = new Date(year, month - 1, day);
     }
+    const priority = this.priority$.getValue();
 
     const newTask: Task = {
       id: Date.now(),
-      description: this.taskDescription.trim(),
+      description: description.trim(),
       isCompleted: false,
       dueDate: dueDateObj,
-      priority: this.priority
+      priority: priority
     };
 
+    console.log('Adding task:', newTask);
     this.taskService.addTask(newTask);
-    // Reset form fields
-    this.taskDescription = '';
-    this.dueDate = '';
-    this.priority = 'low';
+
+    // Reset the BehaviorSubjects.
+    this.taskDescription$.next('');
+    this.dueDate$.next('');
+    this.priority$.next('low');
   }
 }

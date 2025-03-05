@@ -4,13 +4,19 @@
     <!-- Filter Buttons -->
     <div class="col-12 col-md-6 mb-2 mb-md-0 text-left">
       <div class="btn-group" role="group">
-        <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': filter==='all'}" (click)="setFilter('all')">
+        <button type="button" class="btn btn-outline-primary"
+                [ngClass]="{'active': (filterSubject | async) === 'all'}"
+                (click)="setFilter('all')">
           All
         </button>
-        <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': filter==='completed'}" (click)="setFilter('completed')">
+        <button type="button" class="btn btn-outline-primary"
+                [ngClass]="{'active': (filterSubject | async) === 'completed'}"
+                (click)="setFilter('completed')">
           Completed
         </button>
-        <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': filter==='incomplete'}" (click)="setFilter('incomplete')">
+        <button type="button" class="btn btn-outline-primary"
+                [ngClass]="{'active': (filterSubject | async) === 'incomplete'}"
+                (click)="setFilter('incomplete')">
           Incomplete
         </button>
       </div>
@@ -33,11 +39,13 @@
 
   <!-- Task List -->
   <ul class="list-group" [@listAnimation]>
-    <app-task-item
-      *ngFor="let task of filteredTasks"
-      [task]="task"
-      (deleteTask)="onTaskDeleted($event)">
-    </app-task-item>
+    <ng-container *ngIf="filteredTasks$ | async as filteredTasks">
+      <app-task-item
+        *ngFor="let task of filteredTasks"
+        [task]="task"
+        (deleteTask)="onTaskDeleted($event)">
+      </app-task-item>
+    </ng-container>
   </ul>
 
   <!-- Deleted Task Alert -->

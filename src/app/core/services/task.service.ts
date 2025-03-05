@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Task } from '../models/task.model';
 
 @Injectable({
@@ -6,63 +7,45 @@ import { Task } from '../models/task.model';
 })
 export class TaskService {
   private storageKey = 'tasks';
-  private tasks: Task[] = [];
+  private tasksSubject: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
+  public tasks$: Observable<Task[]> = this.tasksSubject.asObservable();
 
   constructor() {
     this.loadTasks();
   }
 
-  /**
-   * Returns the current list of tasks.
-   */
   getTasks(): Task[] {
-    return this.tasks;
+    return this.tasksSubject.getValue();
   }
 
-  /**
-   * Adds a new task and persists the updated list.
-   * @param task The task to add.
-   */
   addTask(task: Task): void {
-    this.tasks.push(task);
-    this.saveTasks();
+    const updatedTasks = [...this.getTasks(), task];
+    this.tasksSubject.next(updatedTasks);
+    this.saveTasks(updatedTasks);
   }
 
-  /**
-   * Updates an existing task and persists the updated list.
-   * @param updatedTask The task with updated details.
-   */
   updateTask(updatedTask: Task): void {
-    const index = this.tasks.findIndex(task => task.id === updatedTask.id);
-    if (index !== -1) {
-      this.tasks[index] = updatedTask;
-      this.saveTasks();
-    }
+    const updatedTasks = this.getTasks().map(task =>
+      task.id === updatedTask.id ? updatedTask : task
+    );
+    this.tasksSubject.next(updatedTasks);
+    this.saveTasks(updatedTasks);
   }
 
-  /**
-   * Deletes a task by its id and persists the updated list.
-   * @param id The id of the task to delete.
-   */
   deleteTask(id: number): void {
-    this.tasks = this.tasks.filter(task => task.id !== id);
-    this.saveTasks();
+    const updatedTasks = this.getTasks().filter(task => task.id !== id);
+    this.tasksSubject.next(updatedTasks);
+    this.saveTasks(updatedTasks);
   }
 
-  /**
-   * Persists the tasks array to localStorage.
-   */
-  private saveTasks(): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.tasks));
+  private saveTasks(tasks: Task[]): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(tasks));
   }
 
-  /**
-   * Loads tasks from localStorage into the in-memory array.
-   */
   private loadTasks(): void {
     const storedTasks = localStorage.getItem(this.storageKey);
     if (storedTasks) {
-      this.tasks = JSON.parse(storedTasks);
+      this.tasksSubject.next(JSON.parse(storedTasks));
     }
   }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Task } from '../../../../core/models/task.model';
 import { TaskService } from '../../../../core/services/task.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-task-item',
@@ -15,10 +16,11 @@ export class TaskItemComponent {
   @Input() task!: Task;
   @Output() deleteTask: EventEmitter<Task> = new EventEmitter<Task>();
 
-  isEditing: boolean = false;
-  editedDescription: string = '';
-  editedDueDate: string = ''; // Format: yyyy-MM-dd
-  editedPriority: 'low' | 'medium' | 'high' = 'low';
+  isEditing = false;
+  // subjects for editing fields
+  editedDescription$ = new BehaviorSubject<string>('');
+  editedDueDate$ = new BehaviorSubject<string>(''); // Format: "yyyy-MM-dd"
+  editedPriority$ = new BehaviorSubject<'low' | 'medium' | 'high'>('low');
 
   constructor(private taskService: TaskService) {}
 
@@ -33,35 +35,40 @@ export class TaskItemComponent {
 
   editTask(): void {
     this.isEditing = true;
-    this.editedDescription = this.task.description;
-    // Convert the task's due date to a "yyyy-MM-dd" string
+    // Populate the subjects with current values
+    this.editedDescription$.next(this.task.description || '');
     if (this.task.dueDate) {
       const dateObj = new Date(this.task.dueDate);
       const year = dateObj.getFullYear();
       const month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
       const day = ('0' + dateObj.getDate()).slice(-2);
-      this.editedDueDate = `${year}-${month}-${day}`;
+      this.editedDueDate$.next(`${year}-${month}-${day}`);
     } else {
-      this.editedDueDate = '';
+      this.editedDueDate$.next('');
     }
-    this.editedPriority = this.task.priority ? this.task.priority : 'low';
+    this.editedPriority$.next(this.task.priority || 'low');
   }
 
   finishEdit(): void {
-    if (this.editedDescription.trim()) {
-      this.task.description = this.editedDescription.trim();
+    // Get and update the description
+    const newDescription = this.editedDescription$.getValue().trim();
+    if (newDescription) {
+      this.task.description = newDescription;
     }
-    // Update dueDate: if a date was entered, convert it manually to a Date object in local time.
-    if (this.editedDueDate && this.editedDueDate.trim()) {
-      const parts = this.editedDueDate.split('-');
+    // Get and update the due date
+    const dueDateStr = this.editedDueDate$.getValue().trim();
+    if (dueDateStr) {
+      const parts = dueDateStr.split('-');
       const year = parseInt(parts[0], 10);
       const month = parseInt(parts[1], 10); // 1-indexed
       const day = parseInt(parts[2], 10);
+      // Create the Date at midnight local time
       this.task.dueDate = new Date(year, month - 1, day);
     } else {
       this.task.dueDate = undefined;
     }
-    this.task.priority = this.editedPriority;
+    // Update priority
+    this.task.priority = this.editedPriority$.getValue();
     this.taskService.updateTask(this.task);
     this.isEditing = false;
   }
