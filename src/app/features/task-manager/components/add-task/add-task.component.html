@@ -1,0 +1,57 @@
+<form (ngSubmit)="onAddTask()" class="mb-4" aria-label="Add new task">
+  <div class="row">
+    <!-- Task description -->
+    <div class="col-12 col-md-4 mb-2 mb-md-0">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Enter task..."
+        [(ngModel)]="taskDescription"
+        name="taskDescription"
+        required>
+    </div>
+
+    <!-- Task due date -->
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+      <input
+        type="date"
+        id="dueDate"
+        class="form-control"
+        aria-label="Task due date"
+        [(ngModel)]="dueDate"
+        name="dueDate">
+        <!-- <ngb-datepicker #dp [(ngModel)]="dueDate" (navigate)="date = $event.next" /> -->
+        <!-- <div class="input-group">
+          <input
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dp"
+            [(ngModel)]="model"
+            ngbDatepicker
+            #d="ngbDatepicker"
+          />
+          <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d.toggle()" type="button"></button>
+        </div> -->
+    </div>
+
+    <!-- Task priority -->
+    <div class="col-12 col-md-3 mb-2 mb-md-0">
+      <select
+        class="form-control"
+        aria-label="Task priority"
+        [(ngModel)]="priority"
+        name="priority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+
+    <!-- Submit button -->
+    <div class="col-12 col-md-2">
+      <button class="btn btn-primary btn-block" type="submit">
+        Add Task
+      </button>
+    </div>
+  </div>
+</form>
