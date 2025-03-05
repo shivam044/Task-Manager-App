@@ -58,11 +58,11 @@
     <!-- Right Column: Action Buttons -->
     <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
       <ng-container *ngIf="!isEditing; else editButtons">
-        <button class="btn btn-sm btn-warning mr-2" (click)="editTask()">Edit</button>
+        <button style="margin-right: 10px;" class="btn btn-sm btn-warning mr-2" (click)="editTask()">Edit</button>
       </ng-container>
       <ng-template #editButtons>
-        <button class="btn btn-sm btn-success mr-2" (click)="finishEdit()">Save</button>
-        <button class="btn btn-sm btn-secondary mr-2" (click)="cancelEdit()">Cancel</button>
+        <button style="margin-right: 10px;" class="btn btn-sm btn-success mr-2" (click)="finishEdit()">Save</button>
+        <button style="margin-right: 10px;" class="btn btn-sm btn-secondary mr-2" (click)="cancelEdit()">Cancel</button>
       </ng-template>
       <button class="btn btn-sm btn-danger" (click)="delete()">Delete</button>
     </div>
