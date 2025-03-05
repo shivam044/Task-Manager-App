@@ -1,1 +1,42 @@
-<p>task-item works!</p>
+<li class="list-group-item d-flex justify-content-between align-items-center">
+  <div class="d-flex align-items-center">
+    <div class="form-check mr-3">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        [checked]="task.isCompleted"
+        (change)="toggleTask()"
+        id="task-{{task.id}}">
+      <label class="form-check-label" [for]="'task-' + task.id"></label>
+    </div>
+    <div>
+      <ng-container *ngIf="!isEditing; else editBlock">
+        <span [ngClass]="{'text-muted text-decoration-line-through': task.isCompleted}">
+          {{ task.description }}
+        </span>
+      </ng-container>
+      <ng-template #editBlock>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="editedDescription"
+          (keydown)="onKeyPress($event)"
+          (blur)="finishEdit()"
+          autofocus>
+      </ng-template>
+      <div class="mt-1">
+        <small class="text-secondary" *ngIf="task.dueDate">
+          Due: {{ task.dueDate | date:'shortDate' }}
+        </small>
+        <small class="text-secondary ml-2" *ngIf="task.priority">
+          Priority: {{ task.priority | titlecase }}
+        </small>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button *ngIf="!isEditing" class="btn btn-sm btn-warning mr-2" (click)="editTask()">Edit</button>
+    <button *ngIf="isEditing" class="btn btn-sm btn-secondary mr-2" (click)="cancelEdit()">Cancel</button>
+    <button class="btn btn-sm btn-danger" (click)="delete()">Delete</button>
+  </div>
+</li>

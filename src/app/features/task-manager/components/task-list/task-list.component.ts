@@ -47,6 +47,7 @@ export class TaskListComponent implements OnInit {
   }
 
   get filteredTasks(): Task[] {
+    // 1. Copy tasks and apply filter first
     let filtered = [...this.tasks];
     if (this.filter === 'completed') {
       filtered = filtered.filter(task => task.isCompleted);
@@ -54,22 +55,31 @@ export class TaskListComponent implements OnInit {
       filtered = filtered.filter(task => !task.isCompleted);
     }
 
+    // 2. Sort based on the selected option
     if (this.sortOption === 'dueDate') {
       filtered.sort((a, b) => {
+        // If both tasks have due dates, compare them
         if (a.dueDate && b.dueDate) {
           return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        } else if (a.dueDate && !b.dueDate) {
+          // Tasks with a due date come first
+          return -1;
+        } else if (!a.dueDate && b.dueDate) {
+          return 1;
+        } else {
+          return 0;
         }
-        return 0;
       });
     } else if (this.sortOption === 'priority') {
-      const priorityOrder = { 'high': 1, 'medium': 2, 'low': 3 };
+      const priorityOrder: Record<string, number> = { high: 1, medium: 2, low: 3 };
       filtered.sort((a, b) => {
-        if (a.priority && b.priority) {
-          return priorityOrder[a.priority] - priorityOrder[b.priority];
-        }
-        return 0;
+        // If both have priority, compare them; tasks missing priority get a fallback value.
+        const priorityA = a.priority ? priorityOrder[a.priority] : 999;
+        const priorityB = b.priority ? priorityOrder[b.priority] : 999;
+        return priorityA - priorityB;
       });
     }
+    console.log('Sorted tasks:', filtered);
     return filtered;
   }
 
@@ -77,15 +87,13 @@ export class TaskListComponent implements OnInit {
     this.filter = filter;
   }
 
-  // Here we accept a string and then cast it internally
-  setSortOption(option: string): void {
-    this.sortOption = option as 'default' | 'dueDate' | 'priority';
+  setSortOption(option: 'default' | 'dueDate' | 'priority'): void {
+    this.sortOption = option;
   }
 
   onTaskDeleted(task: Task): void {
     this.taskService.deleteTask(task.id);
     this.loadTasks();
-
     this.recentlyDeletedTask = task;
     if (this.undoTimeout) {
       clearTimeout(this.undoTimeout);

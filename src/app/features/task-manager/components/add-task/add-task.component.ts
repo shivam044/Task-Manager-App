@@ -13,6 +13,8 @@ import { Task } from '../../../../core/models/task.model';
 })
 export class AddTaskComponent {
   taskDescription: string = '';
+  dueDate: string = ''; // We'll store this as a string for now
+  priority: 'low' | 'medium' | 'high' = 'low';
 
   constructor(private taskService: TaskService) {}
 
@@ -23,9 +25,15 @@ export class AddTaskComponent {
     const newTask: Task = {
       id: Date.now(),
       description: this.taskDescription.trim(),
-      isCompleted: false
+      isCompleted: false,
+      dueDate: this.dueDate ? new Date(this.dueDate) : undefined,
+      priority: this.priority
     };
     this.taskService.addTask(newTask);
+
+    // Reset form fields
     this.taskDescription = '';
+    this.dueDate = '';
+    this.priority = 'low';
   }
 }

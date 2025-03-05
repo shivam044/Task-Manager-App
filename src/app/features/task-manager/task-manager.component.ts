@@ -6,6 +6,7 @@ import { TaskItemComponent } from './components/task-item/task-item.component';
 @Component({
   imports: [AddTaskComponent, TaskListComponent, CommonModule, TaskItemComponent],
   selector: 'app-task-manager',
+  standalone: true,
   templateUrl: './task-manager.component.html',
   styleUrls: ['./task-manager.component.scss']
 })

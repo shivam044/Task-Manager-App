@@ -1,26 +1,36 @@
-<div class="task-manager">
-  <div class="filters">
-    <button (click)="setFilter('all')" [class.active]="filter==='all'">All</button>
-    <button (click)="setFilter('completed')" [class.active]="filter==='completed'">Completed</button>
-    <button (click)="setFilter('incomplete')" [class.active]="filter==='incomplete'">Incomplete</button>
-    <!-- Use a template reference variable -->
-    <select #sortSelect (change)="setSortOption(sortSelect.value)">
-      <option value="default">Default</option>
-      <option value="dueDate">Due Date</option>
-      <option value="priority">Priority</option>
-    </select>
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-md-8">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': filter==='all'}" (click)="setFilter('all')">All</button>
+        <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': filter==='completed'}" (click)="setFilter('completed')">Completed</button>
+        <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': filter==='incomplete'}" (click)="setFilter('incomplete')">Incomplete</button>
+      </div>
+    </div>
+    <div class="col-md-4 text-md-right">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Sort by</span>
+        </div>
+        <select class="custom-select" (change)="setSortOption($any($event.target).value)">
+          <option value="default">Default</option>
+          <option value="dueDate">Due Date</option>
+          <option value="priority">Priority</option>
+        </select>
+      </div>
+    </div>
   </div>
-
-  <ul [@listAnimation]>
+  <ul class="list-group" [@listAnimation]>
     <app-task-item
       *ngFor="let task of filteredTasks"
       [task]="task"
       (deleteTask)="onTaskDeleted($event)">
     </app-task-item>
   </ul>
-
-  <div *ngIf="recentlyDeletedTask" class="undo">
-    <span>Task deleted.</span>
-    <button (click)="undoDelete()">Undo</button>
+  <div *ngIf="recentlyDeletedTask" class="alert alert-warning alert-dismissible mt-3" role="alert">
+    Task deleted.
+    <button type="button" class="close" aria-label="Close" (click)="undoDelete()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
 </div>
