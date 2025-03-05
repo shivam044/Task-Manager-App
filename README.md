@@ -40,15 +40,15 @@ This project allows users to add, edit, delete, and filter tasks. Users can also
 
 2. **Install dependencies:**
    ```bash
-  npm install
+   npm install
 
 
 3. **Run the development server:**
    ```bash
-  ng serve
+   ng serve
 
 
 4. **Testing:**
    ```bash
-  ng test
+   ng test
 
