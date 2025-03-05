@@ -1,7 +1,7 @@
 <li class="list-group-item">
   <div class="row align-items-center">
     <!-- Left Column: Checkbox + Task Info -->
-    <div class="col-12 col-md-8 d-flex align-items-start align-items-md-center mb-2 mb-md-0">
+    <div class="col-12 col-md-8 d-flex align-items-center align-items-md-center mb-2 mb-md-0">
       <!-- Checkbox -->
       <div class="form-check mr-2">
         <input
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Right Column: Action Buttons -->
-    <div class="col-12 col-md-4 d-flex justify-content-end align-items-center">
+    <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
       <ng-container *ngIf="!isEditing; else editButtons">
         <button style="margin-right: 10px;" class="btn btn-sm btn-warning mr-2" (click)="editTask()">Edit</button>
       </ng-container>

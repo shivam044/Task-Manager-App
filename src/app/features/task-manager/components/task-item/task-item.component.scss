@@ -1,82 +1,82 @@
-.task-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  margin-bottom: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  border: 1px solid #eee;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: background-color 0.2s ease;
+// .task-card {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   background: #fff;
+//   margin-bottom: 0.75rem;
+//   padding: 0.75rem 1rem;
+//   border-radius: 4px;
+//   border: 1px solid #eee;
+//   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+//   transition: background-color 0.2s ease;
 
-  &:hover {
-    background-color: #fafafa;
-  }
+//   &:hover {
+//     background-color: #fafafa;
+//   }
 
-  input[type='checkbox'] {
-    margin-right: 1rem;
-    transform: scale(1.2);
-    cursor: pointer;
-  }
+//   input[type='checkbox'] {
+//     margin-right: 1rem;
+//     transform: scale(1.2);
+//     cursor: pointer;
+//   }
 
-  .task-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+//   .task-info {
+//     flex: 1;
+//     display: flex;
+//     flex-direction: column;
 
-    .description {
-      font-size: 1rem;
-      margin-bottom: 0.25rem;
-    }
+//     .description {
+//       font-size: 1rem;
+//       margin-bottom: 0.25rem;
+//     }
 
-    .completed {
-      text-decoration: line-through;
-      color: #999;
-    }
+//     .completed {
+//       text-decoration: line-through;
+//       color: #999;
+//     }
 
-    .task-meta {
-      font-size: 0.85rem;
-      color: #555;
-      display: flex;
-      gap: 1rem;
+//     .task-meta {
+//       font-size: 0.85rem;
+//       color: #555;
+//       display: flex;
+//       gap: 1rem;
 
-      span {
-        &:first-child::after {
-          content: "";
-        }
-      }
-    }
-  }
+//       span {
+//         &:first-child::after {
+//           content: "";
+//         }
+//       }
+//     }
+//   }
 
-  .task-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+//   .task-actions {
+//     display: flex;
+//     align-items: center;
+//     gap: 0.5rem;
 
-    button {
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      font-size: 0.875rem;
+//     button {
+//       border: none;
+//       padding: 0.5rem 1rem;
+//       border-radius: 4px;
+//       cursor: pointer;
+//       transition: background-color 0.2s ease;
+//       font-size: 0.875rem;
 
-      &.edit {
-        background-color: #ffca28;
-        color: #333;
-        &:hover {
-          background-color: darken(#ffca28, 5%);
-        }
-      }
+//       &.edit {
+//         background-color: #ffca28;
+//         color: #333;
+//         &:hover {
+//           background-color: darken(#ffca28, 5%);
+//         }
+//       }
 
-      &.delete {
-        background-color: #f44336;
-        color: #fff;
-        &:hover {
-          background-color: darken(#f44336, 10%);
-        }
-      }
-    }
-  }
-}
+//       &.delete {
+//         background-color: #f44336;
+//         color: #fff;
+//         &:hover {
+//           background-color: darken(#f44336, 10%);
+//         }
+//       }
+//     }
+//   }
+// }
