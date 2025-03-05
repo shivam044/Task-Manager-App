@@ -37,7 +37,7 @@ This project allows users to add, edit, delete, and filter tasks. Users can also
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/task-manager.git
+   git clone https://github.com/shivam044/Task-Manager-App.git
    cd task-manager
 
 2. **Install dependencies:**
