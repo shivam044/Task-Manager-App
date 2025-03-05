@@ -1,5 +1,7 @@
 # Task Manager App
 
+Deployed vercel URL : https://task-manager-app-bt99.vercel.app/
+
 A simple, responsive Task Manager web application built with Angular 19, Bootstrap, and ng-bootstrap.  
 This project allows users to add, edit, delete, and filter tasks. Users can also set a due date and priority for each task.
 
