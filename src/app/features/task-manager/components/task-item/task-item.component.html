@@ -1,7 +1,7 @@
 <li class="list-group-item">
-  <div class="row align-items-center">
+  <div class="row align-items-center justify-content-center">
     <!-- Left Column: Checkbox + Task Info -->
-    <div class="col-12 col-md-8 d-flex align-items-center mb-2 mb-md-0">
+    <div class="col-12 col-md-8 d-flex justify-content-center align-items-center mb-2 mb-md-0">
       <!-- Checkbox -->
       <div class="form-check mr-2">
         <input type="checkbox"
@@ -12,7 +12,7 @@
         <label class="form-check-label" [for]="'task-' + task.id"></label>
       </div>
       <!-- Task Information -->
-      <div class="flex-grow-1">
+      <div class="flex-grow-1  text-center text-md-left">
         <ng-container *ngIf="!isEditing; else editBlock">
           <span [ngClass]="{'text-muted text-decoration-line-through': task.isCompleted}">
             {{ task.description }}
@@ -27,7 +27,7 @@
           </div>
         </ng-container>
         <ng-template #editBlock>
-          <div class="mb-2">
+          <div class="mb-2 col-6">
             <input type="text"
                    class="form-control form-control-sm mb-1"
                    [value]="editedDescription$ | async"
