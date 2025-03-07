@@ -80,3 +80,15 @@
 //     }
 //   }
 // }
+
+:host ::ng-deep .form-check-input {
+  transform: scale(1.5);
+  -webkit-transform: scale(1.5);
+  margin-right: 0.5rem;
+}
+
+.form-check-input {
+  transform: scale(1.5);
+  -webkit-transform: scale(1.5); /* for Safari */
+  margin-right: 0.5rem; /* Adjust spacing if needed */
+}

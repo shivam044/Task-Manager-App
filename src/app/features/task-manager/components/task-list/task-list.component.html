@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container  shadow p-4 bg-white rounded">
   <!-- Filter and Sort Row -->
   <div class="row mb-3">
     <!-- Filter Buttons -->
@@ -23,12 +23,12 @@
     </div>
 
     <!-- Sort Dropdown -->
-    <div class="col-12 col-md-6 text-center text-md-right">
+    <div class="col-12 w-50 col-md-6 text-center text-md-right">
       <div class="input-group">
         <div class="input-group-prepend" style="margin-right: 10px;">
           <span class="input-group-text">Sort by</span>
         </div>
-        <select class="custom-select" (change)="setSortOption($any($event.target).value)">
+        <select class="form-control" (change)="setSortOption($any($event.target).value)">
           <option value="default">Default</option>
           <option value="dueDate">Due Date</option>
           <option value="priority">Priority</option>
@@ -51,8 +51,6 @@
   <!-- Deleted Task Alert -->
   <div *ngIf="recentlyDeletedTask" class="alert alert-warning alert-dismissible mt-3 text-center" role="alert">
     Task deleted
-    <button type="button" class="close" aria-label="Close" (click)="undoDelete()">
-      <span aria-hidden="true">Undo</span>
-    </button>
+    <p-button label="Undo" (click)="undoDelete()" [style]="{'background': '#007acc'}" ></p-button>
   </div>
 </div>

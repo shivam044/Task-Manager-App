@@ -1,31 +1,39 @@
+<!-- Toast container for notifications -->
+<p-toast></p-toast>
 <div class="mb-4" aria-label="Add new task">
   <div class="row">
     <!-- Task description -->
-    <div class="col-12 col-md-4 mb-2 mb-md-0">
+    <div class="col-12 col-md-4 mb-2 mb-md-0" style="min-height: 90px;">
       <input
         type="text"
+        pInputText
         class="form-control"
         placeholder="Enter task..."
         [value]="taskDescription$ | async"
         (input)="taskDescription$.next($any($event.target).value)"
+        (keyup)="handleTaskDescriptionChange($event)"
+        aria-label="Task description"
         required>
+        <!-- Inline error message for task description -->
+        <small *ngIf="taskDescriptionError" class="text-danger d-block mt-1">
+          {{ taskDescriptionError }}
+        </small>
     </div>
     <!-- Task due date -->
-    <div class="col-12 col-md-3 mb-2 mb-md-0">
-      <input
-        type="date"
-        class="form-control"
-        aria-label="Task due date"
-        [value]="dueDate$ | async"
-        (input)="dueDate$.next($any($event.target).value)">
+    <div class="col-12 col-md-3 mb-2 mb-md-0" style="min-height: 90px;">
+          <p-datepicker placeholder="Due Date" styleClass="w-100" [(ngModel)]="dueDate"></p-datepicker>
     </div>
     <!-- Task priority -->
-    <div class="col-12 col-md-3 mb-2 mb-md-0">
+    <div class="col-12 col-md-3 mb-2 mb-md-0" style="min-height: 90px;">
       <select
         class="form-control"
+        pInputText
         aria-label="Task priority"
         [value]="priority$ | async"
         (change)="priority$.next($any($event.target).value)">
+       <!-- Default option -->
+        <option value="default" disabled>Select Priority</option>
+        <!-- Actual priority options -->
         <option value="low">Low</option>
         <option value="medium">Medium</option>
         <option value="high">High</option>
@@ -33,9 +41,10 @@
     </div>
     <!-- Add Task Button -->
     <div class="col-12 col-md-2">
-      <button class="btn btn-primary btn-block" type="button" (click)="onAddTask()">
+      <!-- <button class="btn btn-primary btn-block" type="button" (click)="onAddTask()">
         Add Task
-      </button>
+      </button> -->
+      <p-button  (click)="onAddTask()" [style]="{'background': '#007acc'}" label="Add Task" />
     </div>
   </div>
 </div>

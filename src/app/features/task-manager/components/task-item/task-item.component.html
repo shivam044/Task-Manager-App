@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <li class="list-group-item">
   <div class="row align-items-center justify-content-center">
     <!-- Left Column: Checkbox + Task Info -->
@@ -12,7 +13,7 @@
         <label class="form-check-label" [for]="'task-' + task.id"></label>
       </div>
       <!-- Task Information -->
-      <div class="flex-grow-1  text-center text-md-left">
+      <div class="flex-grow-1  d-flex flex-column justify-content-center align-items-center">
         <ng-container *ngIf="!isEditing; else editBlock">
           <span [ngClass]="{'text-muted text-decoration-line-through': task.isCompleted}">
             {{ task.description }}
@@ -27,23 +28,23 @@
           </div>
         </ng-container>
         <ng-template #editBlock>
-          <div class="mb-2 col-6">
+          <div class="col-8 mb-2">
             <input type="text"
+                   pInputText
                    class="form-control form-control-sm mb-1"
                    [value]="editedDescription$ | async"
                    (input)="editedDescription$.next($any($event.target).value)"
                    placeholder="Edit description"
                    autofocus>
-          </div>
-          <div class="form-row">
-            <div class="col-6 mb-1">
-              <input type="date"
-                     class="form-control form-control-sm"
-                     [value]="editedDueDate$ | async"
-                     (input)="editedDueDate$.next($any($event.target).value)">
+            <div class="col-12 mb-2">
+              <p-datepicker placeholder="Due Date"
+              styleClass="w-100"
+              [(ngModel)]="editedDueDate">
+              </p-datepicker>
             </div>
-            <div class="col-6 mb-1">
-              <select class="form-control form-control-sm"
+            <div class="col-12 mb-2">
+              <select class="form-control"
+                      pInputText
                       [value]="editedPriority$ | async"
                       (change)="editedPriority$.next($any($event.target).value)">
                 <option value="low">Low</option>
@@ -58,13 +59,17 @@
     <!-- Right Column: Action Buttons -->
     <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
       <ng-container *ngIf="!isEditing; else editButtons">
-        <button style="margin-right: 10px;" class="btn btn-sm btn-warning mr-2" (click)="editTask()">Edit</button>
+        <!-- <button style="margin-right: 10px;" class="btn btn-sm btn-warning mr-2" (click)="editTask()">Edit</button> -->
+        <p-button [label]="'Edit'" (click)="editTask()" [style]="{'margin-right': '10px', 'background': '#007acc', 'border': '#007acc'}" class=" mr-2"></p-button>
       </ng-container>
       <ng-template #editButtons>
-        <button style="margin-right: 10px;" class="btn btn-sm btn-success mr-2" (click)="finishEdit()">Save</button>
-        <button style="margin-right: 10px;" class="btn btn-sm btn-secondary mr-2" (click)="cancelEdit()">Cancel</button>
+        <!-- <button style="margin-right: 10px;" class="btn btn-sm btn-success mr-2" (click)="finishEdit()">Save</button> -->
+        <p-button [label]="'Save'" (click)="finishEdit()" [style]="{'margin-right': '10px', 'background': '#198754' , 'border': '#198754'}" class=" mr-2"></p-button>
+        <!-- <button style="margin-right: 10px;" class="btn btn-sm btn-secondary mr-2" (click)="cancelEdit()">Cancel</button> -->
+        <p-button [label]="'Cancel'" (click)="cancelEdit()" [style]="{'margin-right': '10px', 'background': '#6c757d', 'border': '#6c757d'}" class=" mr-2"></p-button>
       </ng-template>
-      <button class="btn btn-sm btn-danger" (click)="delete()">Delete</button>
+      <!-- <button class="btn btn-sm btn-danger" (click)="delete()">Delete</button> -->
+      <p-button [label]="'Delete'" (click)="delete()" [style]="{'margin-right': '10px', 'border': '#dc3545' , 'background': '#dc3545'}" class=" mr-2"></p-button>
     </div>
   </div>
 </li>
