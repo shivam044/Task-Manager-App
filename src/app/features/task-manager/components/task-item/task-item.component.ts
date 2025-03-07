@@ -4,11 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { Task } from '../../../../core/models/task.model';
 import { TaskService } from '../../../../core/services/task.service';
 import { BehaviorSubject } from 'rxjs';
-
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { DatePicker } from 'primeng/datepicker';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-task-item',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  providers: [MessageService],
+  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, DatePicker, ToastModule],
   templateUrl: './task-item.component.html',
   styleUrls: ['./task-item.component.scss']
 })
@@ -19,10 +24,10 @@ export class TaskItemComponent {
   isEditing = false;
   // subjects for editing fields
   editedDescription$ = new BehaviorSubject<string>('');
-  editedDueDate$ = new BehaviorSubject<string>(''); // Format: "yyyy-MM-dd"
+  editedDueDate: Date | undefined;
   editedPriority$ = new BehaviorSubject<'low' | 'medium' | 'high'>('low');
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private messageService: MessageService) {}
 
   toggleTask(): void {
     this.task.isCompleted = !this.task.isCompleted;
@@ -31,21 +36,20 @@ export class TaskItemComponent {
 
   delete(): void {
     this.deleteTask.emit(this.task);
+     // Show toast message for deletion
+     this.messageService.add({
+      severity: 'warn',
+      summary: 'Task Deleted',
+      detail: 'Task deleted successfully.'
+    });
   }
 
   editTask(): void {
     this.isEditing = true;
     // Populate the subjects with current values
     this.editedDescription$.next(this.task.description || '');
-    if (this.task.dueDate) {
-      const dateObj = new Date(this.task.dueDate);
-      const year = dateObj.getFullYear();
-      const month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
-      const day = ('0' + dateObj.getDate()).slice(-2);
-      this.editedDueDate$.next(`${year}-${month}-${day}`);
-    } else {
-      this.editedDueDate$.next('');
-    }
+    // Set the DatePicker value as a Date (or undefined)
+    this.editedDueDate = this.task.dueDate ? new Date(this.task.dueDate) : undefined;
     this.editedPriority$.next(this.task.priority || 'low');
   }
 
@@ -55,18 +59,9 @@ export class TaskItemComponent {
     if (newDescription) {
       this.task.description = newDescription;
     }
-    // Get and update the due date
-    const dueDateStr = this.editedDueDate$.getValue().trim();
-    if (dueDateStr) {
-      const parts = dueDateStr.split('-');
-      const year = parseInt(parts[0], 10);
-      const month = parseInt(parts[1], 10); // 1-indexed
-      const day = parseInt(parts[2], 10);
-      // Create the Date at midnight local time
-      this.task.dueDate = new Date(year, month - 1, day);
-    } else {
-      this.task.dueDate = undefined;
-    }
+    // Update the due date from the DatePicker
+    this.task.dueDate = this.editedDueDate;
+
     // Update priority
     this.task.priority = this.editedPriority$.getValue();
     this.taskService.updateTask(this.task);

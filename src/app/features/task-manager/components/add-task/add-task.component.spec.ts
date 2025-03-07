@@ -34,9 +34,9 @@ describe('AddTaskComponent', () => {
   });
 
   it('should add task and reset form fields when onAddTask is called with valid data', () => {
-    // Set valid input values using the BehaviorSubjects.
+    // Set valid input values using the BehaviorSubjects and the new dueDate property.
     component.taskDescription$.next('New Task');
-    component.dueDate$.next('2023-04-15'); // ISO date string format
+    component.dueDate = new Date(2023, 3, 15); // April 15, 2023 (months are 0-indexed)
     component.priority$.next('medium');
 
     component.onAddTask();
@@ -46,12 +46,11 @@ describe('AddTaskComponent', () => {
     expect(taskArg.description).toBe('New Task');
     expect(taskArg.isCompleted).toBeFalse();
     expect(taskArg.priority).toBe('medium');
-    // Note: new Date(2023, 3, 15) represents April 15, 2023 (months are 0-indexed).
     expect(taskArg.dueDate).toEqual(new Date(2023, 3, 15));
 
-    // Verify that the BehaviorSubjects are reset.
+    // Verify that the BehaviorSubjects and dueDate property are reset.
     expect(component.taskDescription$.getValue()).toBe('');
-    expect(component.dueDate$.getValue()).toEqual('');
+    expect(component.dueDate).toBeUndefined();
     expect(component.priority$.getValue()).toBe('low');
   });
 });

@@ -7,11 +7,11 @@ import { map } from 'rxjs/operators';
 import { Task } from '../../../../core/models/task.model';
 import { TaskService } from '../../../../core/services/task.service';
 import { TaskItemComponent } from '../task-item/task-item.component';
-
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TaskItemComponent],
+  imports: [CommonModule, FormsModule, TaskItemComponent, ButtonModule],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss'],
   animations: [

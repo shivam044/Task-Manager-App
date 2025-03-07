@@ -3,6 +3,18 @@
   font-family: Arial, sans-serif;
 }
 
+/* Not recommended unless absolutely needed */
+:host ::ng-deep .p-inputtext {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.p-button .p-component {
+  background: #007acc !important;
+  color: #fff !important;
+  border: none !important;
+}
+
 .content {
   padding: 1rem;
   text-align: center;
